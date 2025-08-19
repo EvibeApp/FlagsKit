@@ -4,7 +4,7 @@ private class BundleFinder {}
 
 extension Foundation.Bundle {
     /// Returns the resource bundle associated with the current Swift module.
-    static var currentModule: Bundle = {
+    static public var currentModule: Bundle = {
         let bundleName = "FlagsKit_FlagsKit"
 
         let candidates = [
