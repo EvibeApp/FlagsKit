@@ -72,8 +72,6 @@ import AppKit
 // MARK: - Public helpers to fetch platform images from the package bundle
 
 public enum FlagImage {
-    /// Normalise le code pays (ex: "FR" -> "fr")
-    @inlinable
     private static func normalized(_ code: String) -> String {
         code.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
     }
