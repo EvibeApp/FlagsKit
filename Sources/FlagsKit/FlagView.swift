@@ -79,8 +79,6 @@ public enum FlagImage {
     }
 
     #if canImport(UIKit)
-    /// UIImage pour iOS / tvOS / visionOS / macCatalyst
-    @inlinable
     public static func uiImage(forCountryCode code: String) -> UIImage? {
         let name = normalized(code)
         // ✅ iOS: pas de `image(forResource:)` sur Bundle — on utilise l'API UIKit ci-dessous
@@ -89,8 +87,6 @@ public enum FlagImage {
     #endif
 
     #if canImport(AppKit) && !targetEnvironment(macCatalyst)
-    /// NSImage pour macOS (Catalyst utilise UIKit ci-dessus)
-    @inlinable
     public static func nsImage(forCountryCode code: String) -> NSImage? {
         let name = normalized(code)
         // ✅ macOS: utiliser le bundle du package + image(forResource:)
