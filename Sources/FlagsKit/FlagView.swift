@@ -61,6 +61,82 @@ public struct FlagView: View {
         }
     }
 }
+#if canImport(UIKit)
+import UIKit
+#endif
+
+#if canImport(AppKit) && !targetEnvironment(macCatalyst)
+import AppKit
+#endif
+
+// MARK: - Public helpers to fetch platform images from the package bundle
+
+public enum FlagImage {
+    /// Normalise le code pays (ex: "FR" -> "fr")
+    @inlinable
+    private static func normalized(_ code: String) -> String {
+        code.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+    }
+
+    #if canImport(UIKit)
+    /// UIImage pour iOS / tvOS / visionOS / macCatalyst
+    @inlinable
+    public static func uiImage(forCountryCode code: String) -> UIImage? {
+        let name = normalized(code)
+        // ✅ iOS: pas de `image(forResource:)` sur Bundle — on utilise l'API UIKit ci-dessous
+        return UIImage(named: name, in: .currentModule, compatibleWith: nil)
+    }
+    #endif
+
+    #if canImport(AppKit) && !targetEnvironment(macCatalyst)
+    /// NSImage pour macOS (Catalyst utilise UIKit ci-dessus)
+    @inlinable
+    public static func nsImage(forCountryCode code: String) -> NSImage? {
+        let name = normalized(code)
+        // ✅ macOS: utiliser le bundle du package + image(forResource:)
+        if let img = Bundle.currentModule.image(forResource: NSImage.Name(name)) {
+            return img
+        }
+        // Anciennes surcharges prennent String ; on tente aussi la version String si dispo
+        return Bundle.currentModule.image(forResource: name)
+    }
+    #endif
+}
+
+public enum FlagImage {
+
+    /// Data de l'image "cc.png" (cc = code pays ISO) depuis le bundle du package.
+    /// Ex: "FR" -> "fr.png"
+    @inlinable
+    public static func data(forCountryCode code: String, ext: String = "png") -> Data? {
+        let name = code.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        guard let url = Bundle.currentModule.url(forResource: name, withExtension: ext) else {
+            return nil
+        }
+        // mappedIfSafe = efficace + évite copie quand possible
+        return try? Data(contentsOf: url, options: [.mappedIfSafe])
+    }
+
+    #if canImport(UIKit)
+    import UIKit
+    /// UIImage pour iOS / tvOS / visionOS
+    @inlinable
+    public static func uiImage(forCountryCode code: String) -> UIImage? {
+        guard let d = data(forCountryCode: code) else { return nil }
+        return UIImage(data: d)
+    }
+    #endif
+
+    #if canImport(AppKit) && !targetEnvironment(macCatalyst)
+    import AppKit
+    /// NSImage pour macOS (Catalyst utilisera UIImage)
+    @inlinable
+    public static func nsImage(forCountryCode code: String) -> NSImage? {
+        guard let d = data(forCountryCode: code) else { return nil }
+        return NSImage(data: d)
+    }
+    #endif
+}
 
 public extension FlagView {
 
