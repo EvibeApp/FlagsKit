@@ -1,4 +1,11 @@
 import SwiftUI
+import Foundation
+
+public extension Bundle {
+    static var flagsKit: Bundle {
+        return .module
+    }
+}
 
 /// SwiftUI Flag view
 ///
