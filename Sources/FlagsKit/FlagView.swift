@@ -103,41 +103,6 @@ public enum FlagImage {
     #endif
 }
 
-public enum FlagImage {
-
-    /// Data de l'image "cc.png" (cc = code pays ISO) depuis le bundle du package.
-    /// Ex: "FR" -> "fr.png"
-    @inlinable
-    public static func data(forCountryCode code: String, ext: String = "png") -> Data? {
-        let name = code.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
-        guard let url = Bundle.currentModule.url(forResource: name, withExtension: ext) else {
-            return nil
-        }
-        // mappedIfSafe = efficace + évite copie quand possible
-        return try? Data(contentsOf: url, options: [.mappedIfSafe])
-    }
-
-    #if canImport(UIKit)
-    import UIKit
-    /// UIImage pour iOS / tvOS / visionOS
-    @inlinable
-    public static func uiImage(forCountryCode code: String) -> UIImage? {
-        guard let d = data(forCountryCode: code) else { return nil }
-        return UIImage(data: d)
-    }
-    #endif
-
-    #if canImport(AppKit) && !targetEnvironment(macCatalyst)
-    import AppKit
-    /// NSImage pour macOS (Catalyst utilisera UIImage)
-    @inlinable
-    public static func nsImage(forCountryCode code: String) -> NSImage? {
-        guard let d = data(forCountryCode: code) else { return nil }
-        return NSImage(data: d)
-    }
-    #endif
-}
-
 public extension FlagView {
 
     /// Style of the flag image
