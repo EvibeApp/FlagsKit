@@ -80,7 +80,7 @@ public enum FlagImage {
     public static func uiImage(forCountryCode code: String) -> UIImage? {
         let name = normalized(code)
         // ✅ iOS: pas de `image(forResource:)` sur Bundle — on utilise l'API UIKit ci-dessous
-        return UIImage(named: name, in: .currentModule, compatibleWith: nil)
+        return UIImage(named: name, in: .currentModule, with: nil)
     }
     #endif
 
